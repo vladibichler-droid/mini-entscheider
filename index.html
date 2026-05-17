@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Mini-Entscheider</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(96, 165, 250, 0.35), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.25), transparent 35%),
+        linear-gradient(135deg, #0f172a, #1e3a8a);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 560px;
+      background: rgba(255, 255, 255, 0.11);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 30px;
+      padding: 32px;
+      box-shadow: 0 28px 70px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(14px);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.16);
+      color: #dbeafe;
+      font-size: 13px;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 36px;
+      letter-spacing: -0.6px;
+    }
+
+    p {
+      color: #dbeafe;
+      line-height: 1.5;
+      margin-bottom: 0;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 170px;
+      margin-top: 18px;
+      padding: 16px;
+      border: none;
+      border-radius: 18px;
+      font-size: 16px;
+      resize: vertical;
+      outline: none;
+      line-height: 1.5;
+      box-shadow: inset 0 0 0 2px transparent;
+    }
+
+    textarea:focus {
+      box-shadow: inset 0 0 0 2px #93c5fd;
+    }
+
+    .info-row {
+      margin-top: 10px;
+      color: #bfdbfe;
+      font-size: 14px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 14px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .primary {
+      background: white;
+      color: #1e3a8a;
+      box-shadow: 0 12px 28px rgba(255, 255, 255, 0.18);
+    }
+
+    .secondary {
+      background: rgba(255, 255, 255, 0.18);
+      color: white;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .result-box {
+      margin-top: 26px;
+      padding: 26px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.15);
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .label {
+      color: #bfdbfe;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .result {
+      font-size: 34px;
+      font-weight: bold;
+      min-height: 46px;
+      word-break: break-word;
+    }
+
+    .result.success {
+      color: #ffffff;
+      animation: pop 0.25s ease;
+    }
+
+    .result.error {
+      color: #fecaca;
+      font-size: 20px;
+    }
+
+    .hint {
+      margin-top: 18px;
+      font-size: 14px;
+      color: #c7d2fe;
+      text-align: center;
+    }
+
+    .footer {
+      margin-top: 24px;
+      text-align: center;
+      font-size: 13px;
+      color: #bfdbfe;
+      opacity: 0.9;
+    }
+
+    @keyframes pop {
+      0% {
+        transform: scale(0.92);
+        opacity: 0.4;
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .app {
+        padding: 24px;
+      }
+
+      h1 {
+        font-size: 30px;
+      }
+
+      .result {
+        font-size: 28px;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+    <div class="badge">Mini-Projekt · Final-Version</div>
+
+    <h1>Mini-Entscheider</h1>
+
+    <p>
+      Schreibe mehrere Möglichkeiten untereinander hinein.
+      Danach klickst du auf „Entscheiden“.
+    </p>
+
+    <textarea id="optionsInput">Pizza
+Döner
+Nudeln
+Burger</textarea>
+
+    <div class="info-row" id="counterText">
+      4 Möglichkeiten eingetragen
+    </div>
+
+    <div class="buttons">
+      <button class="primary" id="decideButton">Entscheiden</button>
+      <button class="secondary" id="exampleButton">Beispiel einfügen</button>
+      <button class="secondary" id="clearButton">Zurücksetzen</button>
+    </div>
+
+    <section class="result-box">
+      <div class="label">Deine Entscheidung:</div>
+      <div class="result" id="resultText">Noch nichts gewählt</div>
+    </section>
+
+    <div class="hint">
+      Tipp: Jede Zeile zählt als eine Möglichkeit.
+    </div>
+
+    <div class="footer">
+      Mini-Entscheider fertiggestellt · HTML, CSS und JavaScript
+    </div>
+  </main>
+
+  <script>
+    const optionsInput = document.getElementById("optionsInput");
+    const decideButton = document.getElementById("decideButton");
+    const exampleButton = document.getElementById("exampleButton");
+    const clearButton = document.getElementById("clearButton");
+    const resultText = document.getElementById("resultText");
+    const counterText = document.getElementById("counterText");
+
+    function getOptions() {
+      return optionsInput.value
+        .split("\n")
+        .map(function (option) {
+          return option.trim();
+        })
+        .filter(function (option) {
+          return option.length > 0;
+        });
+    }
+
+    function updateCounter() {
+      const options = getOptions();
+
+      if (options.length === 0) {
+        counterText.textContent = "Noch keine Möglichkeiten eingetragen";
+      } else if (options.length === 1) {
+        counterText.textContent = "1 Möglichkeit eingetragen";
+      } else {
+        counterText.textContent = options.length + " Möglichkeiten eingetragen";
+      }
+    }
+
+    function resetResult() {
+      resultText.textContent = "Noch nichts gewählt";
+      resultText.classList.remove("success");
+      resultText.classList.remove("error");
+    }
+
+    function decide() {
+      const options = getOptions();
+
+      resultText.classList.remove("success");
+      resultText.classList.remove("error");
+
+      if (options.length < 2) {
+        resultText.textContent = "Bitte mindestens 2 Möglichkeiten eingeben";
+        resultText.classList.add("error");
+        return;
+      }
+
+      const randomIndex = Math.floor(Math.random() * options.length);
+      const selectedOption = options[randomIndex];
+
+      resultText.textContent = selectedOption;
+      resultText.classList.add("success");
+    }
+
+    decideButton.addEventListener("click", function () {
+      decide();
+    });
+
+    exampleButton.addEventListener("click", function () {
+      optionsInput.value = "Film schauen\nSpazieren gehen\nMusik hören\nProgrammieren\nAufräumen";
+      resetResult();
+      updateCounter();
+    });
+
+    clearButton.addEventListener("click", function () {
+      optionsInput.value = "";
+      resetResult();
+      updateCounter();
+    });
+
+    optionsInput.addEventListener("input", function () {
+      updateCounter();
+      resetResult();
+    });
+
+    updateCounter();
+  </script>
+</body>
+</html>
